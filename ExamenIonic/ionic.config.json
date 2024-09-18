@@ -1,0 +1,7 @@
+{
+  "name": "ExamenIonic",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
