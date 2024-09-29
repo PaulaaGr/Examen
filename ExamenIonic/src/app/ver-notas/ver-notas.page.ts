@@ -47,6 +47,15 @@ export class VerNotasPage implements OnInit {
     '40% Final': [],
   };
 
+  promediosPorCorte: { [corte: string]: number } = {
+    'Primer 20%': 0,
+    'Segundo 20%': 0,
+    'Tercer 20%': 0,
+    '40% Final': 0,
+  };
+
+  promedioGeneral: number = 0;
+
   constructor(private router: Router, private alertController: AlertController) {}
 
   ngOnInit() {
@@ -79,6 +88,31 @@ export class VerNotasPage implements OnInit {
 
       console.log('Notas agrupadas por corte:', this.notasPorCorte);
     }
+
+    this.calcularPromedios();
+  }
+
+  calcularPromedios() {
+    const cortes = ['Primer 20%', 'Segundo 20%', 'Tercer 20%', '40% Final'];
+
+    let totalPromedio = 0;
+
+    cortes.forEach(corte => {
+      const notas = this.notasPorCorte[corte];
+      if (notas.length > 0) {
+        const sumaNotas = notas.reduce((acumulador, nota) => acumulador + nota.nota, 0);
+        const promedio = sumaNotas / notas.length;
+        this.promediosPorCorte[corte] = promedio;
+
+        // Para el cálculo del promedio general, considera los porcentajes
+        const porcentaje = corte === '40% Final' ? 0.40 : 0.20;
+        totalPromedio += promedio * porcentaje;
+      }
+    });
+
+    this.promedioGeneral = totalPromedio;
+    console.log('Promedios por corte:', this.promediosPorCorte);
+    console.log('Promedio general:', this.promedioGeneral);
   }
 
   async confirmarEliminarNotasPorCorte(corte: string) {
