@@ -1,16 +1,21 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>Agregar Materia</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-item>
+  <ion-label position="floating">Nombre de la Materia</ion-label>
+  <ion-input (ionInput)="actualizarCampo('nombre', $event)"></ion-input>
+</ion-item>
 
-<ion-content>
-  <form (ngSubmit)="guardarMateria()" #materiaForm="ngForm">
-    <ion-item>
-      <ion-label position="floating">Nombre de la Materia</ion-label>
-      <ion-input type="text" required [(ngModel)]="materia.nombre" name="nombre"></ion-input>
-    </ion-item>
+<ion-item>
+  <ion-label position="floating">Semestre</ion-label>
+  <ion-input type="number" (ionInput)="actualizarCampo('semestre', $event)"></ion-input>
+</ion-item>
 
-    <ion-button expand="block" type="submit" [disabled]="!materiaForm.form.valid">Guardar Materia</ion-button>
-  </form>
-</ion-content>
+<ion-item>
+  <ion-label position="floating">Código</ion-label>
+  <ion-input (ionInput)="actualizarCampo('codigo', $event)"></ion-input>
+</ion-item>
+
+<ion-item>
+  <ion-label position="floating">Observaciones</ion-label>
+  <ion-textarea (ionInput)="actualizarCampo('observaciones', $event)"></ion-textarea>
+</ion-item>
+
+<ion-button expand="block" (click)="guardarMateria()">Guardar Materia</ion-button>

@@ -1,0 +1,20 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Notas Registradas</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-item *ngFor="let nota of notas">
+      <ion-label>
+        <h2>{{ nota['descripcion'] }}</h2>
+        <p>Fecha de entrega: {{ nota['fechaEntrega'] }}</p>
+        <p>Nota: {{ nota['nota'] }}</p>
+        <p>Observaciones: {{ nota['observaciones'] }}</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+  <ion-button (click)="volverADetalleMateria()">Volver a Detalle de Materia</ion-button>
+</ion-content>

@@ -5,15 +5,13 @@
 </ion-header>
 
 <ion-content>
-  <!-- Lista de Materias -->
   <ion-list>
-    <ion-item *ngFor="let materia of materias" >
+    <ion-item *ngFor="let materia of materias">
       <ion-label>
         <h2>{{ materia.nombre }}</h2>
-        <p>Promedio: {{ materia.promedio }} - {{ materia.aprobada ? 'Aprobada' : 'Reprobada' }}</p>
       </ion-label>
+      <ion-button fill="outline" slot="end" (click)="verDetalleMateria(materia)">Ver detalles</ion-button>
     </ion-item>
     <ion-button [routerLink]="['/crear-materia']">Agregar Materia</ion-button>
   </ion-list>
 </ion-content>
-
