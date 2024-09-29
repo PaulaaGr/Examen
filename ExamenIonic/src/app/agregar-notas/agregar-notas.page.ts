@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+          import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import {
@@ -14,7 +14,7 @@ import {
   IonContent,
   IonButtons,
   IonSelectOption,
-  IonSelect
+  IonSelect,
 } from '@ionic/angular/standalone';
 import { Nota } from '../models/nota'; // Importa la interfaz Nota
 
@@ -47,7 +47,7 @@ export class AgregarNotasPage implements OnInit {
     nota: 0,
     observaciones: '',
     corte: '',
-    codigoMateria: '' // Inicializar 'codigoMateria'
+    codigoMateria: ''
   };
 
   materia: { [key: string]: any } = {};
@@ -55,27 +55,11 @@ export class AgregarNotasPage implements OnInit {
   constructor(private router: Router) {}
 
   ngOnInit() {
-    const navigation = this.router.getCurrentNavigation();
-    if (navigation?.extras?.state && navigation.extras.state['materia']) {
-      this.materia = navigation.extras.state['materia'];
-      
-      if (!this.materia['codigo']) {
-        console.error('La materia no tiene un código válido.');
-      } else {
-        this.nota.codigoMateria = this.materia['codigo']; // Asignar el código de la materia a la nota
-        this.cargarNotas();
-      }
-    }
-  }
-
-  cargarNotas() {
-    const notasGuardadas = JSON.parse(localStorage.getItem('notas') || '[]');
-    const notasFiltradas = notasGuardadas.filter((nota: Nota) => nota.codigoMateria === this.materia['codigo']);
-
-    if (notasFiltradas.length > 0) {
-      this.nota = notasFiltradas[0];
+    this.materia = this.router.getCurrentNavigation()?.extras.state?.['materia'];
+    if (this.materia) {
+      console.log('Materia recibida:', this.materia);
     } else {
-      console.log('No hay notas guardadas para esta materia.');
+      console.error('No se recibió la materia al navegar.');
     }
   }
 
@@ -88,41 +72,33 @@ export class AgregarNotasPage implements OnInit {
         this.nota.descripcion = valor;
         break;
       case 'nota':
-        this.nota.nota = valor;
+        this.nota.nota = valor ? parseFloat(valor) : 0;
         break;
       case 'observaciones':
         this.nota.observaciones = valor;
         break;
       case 'corte':
-        this.nota.corte = valor; // Agregar el manejo del corte
+        this.nota.corte = valor;
         break;
       default:
-        console.error('Campo no válido');
+        console.error('Campo no válido:', campo);
     }
   }
 
   guardarNota() {
-    if (this.nota.nota === undefined || this.nota.nota === null) {
-      this.nota.nota = 0;
+    if (!this.nota.corte || !this.materia['codigo']) {
+      console.warn('No se puede guardar la nota: Corte o código de materia no definidos.');
+      return;
     }
 
     const notasGuardadas = JSON.parse(localStorage.getItem('notas') || '[]');
+    const nuevaNota = { ...this.nota, codigoMateria: this.materia['codigo'] };
 
-    if (this.materia && this.materia['codigo']) {
-      const index = notasGuardadas.findIndex((nota: Nota) => nota.codigoMateria === this.materia['codigo']);
+    notasGuardadas.push(nuevaNota);
 
-      if (index > -1) {
-        notasGuardadas[index] = { ...this.nota, codigoMateria: this.materia['codigo'] };
-      } else {
-        notasGuardadas.push({ ...this.nota, codigoMateria: this.materia['codigo'] });
-      }
+    localStorage.setItem('notas', JSON.stringify(notasGuardadas));
 
-      localStorage.setItem('notas', JSON.stringify(notasGuardadas));
-      console.log('Nota guardada correctamente:', notasGuardadas);
-    } else {
-      console.error('La materia no tiene un código válido.');
-    }
-
+    console.log('Notas guardadas:', notasGuardadas);
     this.router.navigate(['/detalle-materia'], { state: { materia: this.materia } });
   }
 

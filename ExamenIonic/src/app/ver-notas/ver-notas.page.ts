@@ -10,6 +10,7 @@ import {
   IonLabel,
   IonButton,
   IonContent,
+  AlertController,
 } from '@ionic/angular/standalone';
 import { Materia } from '../models/materia'; // Importa la interfaz Materia
 import { Nota } from '../models/nota'; // Importa la interfaz Nota
@@ -38,29 +39,117 @@ export class VerNotasPage implements OnInit {
     codigo: '',
     observaciones: '',
   };
-  
-  notas: Nota[] = []; // Cambia el tipo a Nota[]
 
-  constructor(private router: Router) {}
+  notasPorCorte: { [corte: string]: Nota[] } = {
+    'Primer 20%': [],
+    'Segundo 20%': [],
+    'Tercer 20%': [],
+    '40% Final': [],
+  };
+
+  constructor(private router: Router, private alertController: AlertController) {}
 
   ngOnInit() {
-    const navigation = this.router.getCurrentNavigation();
-    if (navigation?.extras?.state && navigation.extras.state['materia']) {
-      this.materia = navigation.extras.state['materia'] as Materia; // Tipado como Materia
-      this.cargarNotas(); // Cargar las notas al iniciar
-    }
+    this.materia = this.router.getCurrentNavigation()?.extras.state?.['materia'];
+    if (this.materia) {
+      this.cargarNotas();
+    } else {
+      console.error('No se pudo obtener la materia al navegar.');
+    };
   }
 
   cargarNotas() {
-    const notasGuardadas = JSON.parse(localStorage.getItem('notas') || '[]');
-    // Filtrar las notas que pertenecen a la materia actual usando 'codigoMateria'
-    this.notas = notasGuardadas.filter((nota: Nota) => nota.codigoMateria === this.materia.codigo);
-    console.log('Notas cargadas:', this.notas); // Verificar las notas cargadas
+    const notasGuardadas: Nota[] = JSON.parse(localStorage.getItem('notas') || '[]');
+
+    this.notasPorCorte = {
+      'Primer 20%': [],
+      'Segundo 20%': [],
+      'Tercer 20%': [],
+      '40% Final': [],
+    };
+
+    if (this.materia?.codigo) {
+      const notasMateria = notasGuardadas.filter(nota => nota.codigoMateria === this.materia.codigo);
+
+      notasMateria.forEach(nota => {
+        if (this.notasPorCorte[nota.corte]) {
+          this.notasPorCorte[nota.corte].push(nota);
+        }
+      });
+
+      console.log('Notas agrupadas por corte:', this.notasPorCorte);
+    }
+  }
+
+  async confirmarEliminarNotasPorCorte(corte: string) {
+    const alert = await this.alertController.create({
+      header: 'Confirmar Eliminación',
+      message: `¿Estás seguro de que deseas eliminar todas las notas del corte ${corte} para esta materia? Esta acción no se puede deshacer.`,
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          cssClass: 'secondary',
+        },
+        {
+          text: 'Eliminar',
+          handler: () => {
+            this.eliminarNotasPorCorte(corte);
+          },
+        },
+      ],
+    });
+
+    await alert.present();
+  }
+
+  eliminarNotasPorCorte(corte: string) {
+    const notasGuardadas: Nota[] = JSON.parse(localStorage.getItem('notas') || '[]');
+
+    const nuevasNotas = notasGuardadas.filter(nota => 
+      !(nota.codigoMateria === this.materia.codigo && nota.corte === corte)
+    );
+
+    localStorage.setItem('notas', JSON.stringify(nuevasNotas));
+
+    this.cargarNotas();
+  }
+
+  async confirmarEliminarNota(nota: Nota) {
+    const alert = await this.alertController.create({
+      header: 'Confirmar Eliminación',
+      message: `¿Estás seguro de que deseas eliminar la nota: "${nota.descripcion}"? Esta acción no se puede deshacer.`,
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          cssClass: 'secondary',
+        },
+        {
+          text: 'Eliminar',
+          handler: () => {
+            this.eliminarNota(nota);
+          },
+        },
+      ],
+    });
+
+    await alert.present();
+  }
+
+  eliminarNota(notaAEliminar: Nota) {
+    const notasGuardadas: Nota[] = JSON.parse(localStorage.getItem('notas') || '[]');
+
+    const nuevasNotas = notasGuardadas.filter(nota => 
+      !(nota.codigoMateria === this.materia.codigo && nota.fechaEntrega === notaAEliminar.fechaEntrega)
+    );
+
+    localStorage.setItem('notas', JSON.stringify(nuevasNotas));
+
+    this.cargarNotas();
   }
 
   volverADetalleMateria() {
-    console.log('Navegando a Detalle de Materia con:', this.materia);
     this.router.navigate(['/detalle-materia'], { state: { materia: this.materia } });
   }
-  
 }

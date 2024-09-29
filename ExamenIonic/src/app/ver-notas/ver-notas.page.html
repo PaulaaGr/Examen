@@ -5,15 +5,31 @@
 </ion-header>
 
 <ion-content>
-  <ion-list>
-    <ion-item *ngFor="let nota of notas">
+  <ion-list *ngFor="let corte of ['Primer 20%', 'Segundo 20%', 'Tercer 20%', '40% Final']">
+    <ion-item>
       <ion-label>
-        <h2>{{ nota['descripcion'] }}</h2>
-        <p>Fecha de entrega: {{ nota['fechaEntrega'] }}</p>
-        <p>Nota: {{ nota['nota'] }}</p>
-        <p>Observaciones: {{ nota['observaciones'] }}</p>
+        <h2>{{ corte }}</h2>
+        <ion-button (click)="confirmarEliminarNotasPorCorte(corte)">Eliminar Todas las Notas de Este Corte</ion-button>
       </ion-label>
     </ion-item>
+
+    <ng-container *ngIf="notasPorCorte[corte] && notasPorCorte[corte].length > 0; else noNotas">
+      <ion-item *ngFor="let nota of notasPorCorte[corte]">
+        <ion-label>
+          <h2>{{ nota.descripcion }}</h2>
+          <p>Fecha de entrega: {{ nota.fechaEntrega }}</p>
+          <p>Nota: {{ nota.nota }}</p>
+          <p>Observaciones: {{ nota.observaciones }}</p>
+        </ion-label>
+        <ion-button (click)="confirmarEliminarNota(nota)">Eliminar Nota</ion-button>
+      </ion-item>
+    </ng-container>
+
+    <ng-template #noNotas>
+      <ion-item>
+        <ion-label>No hay notas registradas para este corte.</ion-label>
+      </ion-item>
+    </ng-template>
   </ion-list>
 
   <ion-button (click)="volverADetalleMateria()">Volver a Detalle de Materia</ion-button>
