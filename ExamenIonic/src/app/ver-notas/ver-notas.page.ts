@@ -12,8 +12,8 @@ import {
   IonContent,
   AlertController,
 } from '@ionic/angular/standalone';
-import { Materia } from '../models/materia'; // Importa la interfaz Materia
 import { Nota } from '../models/nota'; // Importa la interfaz Nota
+import { Materia } from '../models/materia'; // Importa la interfaz Materia
 
 @Component({
   selector: 'app-ver-notas',
@@ -55,7 +55,7 @@ export class VerNotasPage implements OnInit {
       this.cargarNotas();
     } else {
       console.error('No se pudo obtener la materia al navegar.');
-    };
+    }
   }
 
   cargarNotas() {
@@ -147,6 +147,16 @@ export class VerNotasPage implements OnInit {
     localStorage.setItem('notas', JSON.stringify(nuevasNotas));
 
     this.cargarNotas();
+  }
+
+  modificarNota(nota: Nota) {
+    this.router.navigate(['/agregar-notas'], {
+      state: {
+        materia: this.materia,
+        nota: nota,
+        esEditar: true // Indicar que es una modificación de la nota
+      }
+    });
   }
 
   volverADetalleMateria() {

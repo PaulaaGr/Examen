@@ -1,4 +1,4 @@
-          import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import {
@@ -37,7 +37,7 @@ import { Nota } from '../models/nota'; // Importa la interfaz Nota
     IonContent,
     IonButtons,
     IonSelectOption,
-    IonSelect
+    IonSelect,
   ],
 })
 export class AgregarNotasPage implements OnInit {
@@ -51,15 +51,24 @@ export class AgregarNotasPage implements OnInit {
   };
 
   materia: { [key: string]: any } = {};
+  esEditar: boolean = false;
 
   constructor(private router: Router) {}
 
   ngOnInit() {
-    this.materia = this.router.getCurrentNavigation()?.extras.state?.['materia'];
+    const state = this.router.getCurrentNavigation()?.extras.state;
+
+    this.materia = state?.['materia'];
     if (this.materia) {
       console.log('Materia recibida:', this.materia);
     } else {
       console.error('No se recibió la materia al navegar.');
+    }
+
+    const notaExistente = state?.['nota'];
+    if (notaExistente) {
+      this.nota = { ...notaExistente }; // Prellenar la nota con la información existente
+      this.esEditar = true;
     }
   }
 
@@ -91,10 +100,22 @@ export class AgregarNotasPage implements OnInit {
       return;
     }
 
-    const notasGuardadas = JSON.parse(localStorage.getItem('notas') || '[]');
-    const nuevaNota = { ...this.nota, codigoMateria: this.materia['codigo'] };
+    const notasGuardadas: Nota[] = JSON.parse(localStorage.getItem('notas') || '[]');
 
-    notasGuardadas.push(nuevaNota);
+    if (this.esEditar) {
+      // Si estamos en modo de edición, encontrar la nota y actualizarla
+      const indice = notasGuardadas.findIndex(
+        nota => nota.codigoMateria === this.materia['codigo'] && nota.fechaEntrega === this.nota.fechaEntrega
+      );
+
+      if (indice !== -1) {
+        notasGuardadas[indice] = this.nota; // Actualizamos la nota
+      }
+    } else {
+      // Si no estamos editando, agregamos una nueva nota
+      const nuevaNota = { ...this.nota, codigoMateria: this.materia['codigo'] };
+      notasGuardadas.push(nuevaNota);
+    }
 
     localStorage.setItem('notas', JSON.stringify(notasGuardadas));
 

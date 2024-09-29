@@ -30,8 +30,5 @@ export const routes: Routes = [
     path: 'ver-notas',
     loadComponent: () => import('./ver-notas/ver-notas.page').then( m => m.VerNotasPage)
   },
-  {
-    path: 'modificar-nota',
-    loadComponent: () => import('./modificar-nota/modificar-nota.page').then( m => m.ModificarNotaPage)
-  },
+
 ];
