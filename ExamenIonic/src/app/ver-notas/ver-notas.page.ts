@@ -55,6 +55,7 @@ export class VerNotasPage implements OnInit {
   };
 
   promedioGeneral: number = 0;
+  aprobado: boolean = false;
 
   constructor(private router: Router, private alertController: AlertController) {}
 
@@ -62,6 +63,7 @@ export class VerNotasPage implements OnInit {
     this.materia = this.router.getCurrentNavigation()?.extras.state?.['materia'];
     if (this.materia) {
       this.cargarNotas();
+      this.calcularPromedios();
     } else {
       console.error('No se pudo obtener la materia al navegar.');
     }
@@ -88,31 +90,46 @@ export class VerNotasPage implements OnInit {
 
       console.log('Notas agrupadas por corte:', this.notasPorCorte);
     }
-
-    this.calcularPromedios();
   }
 
   calcularPromedios() {
-    const cortes = ['Primer 20%', 'Segundo 20%', 'Tercer 20%', '40% Final'];
-
-    let totalPromedio = 0;
-
-    cortes.forEach(corte => {
+    let sumaTotal = 0;
+    let totalPesos = 0; // Para sumar los pesos de los cortes
+  
+    for (const corte in this.notasPorCorte) {
       const notas = this.notasPorCorte[corte];
       if (notas.length > 0) {
-        const sumaNotas = notas.reduce((acumulador, nota) => acumulador + nota.nota, 0);
-        const promedio = sumaNotas / notas.length;
-        this.promediosPorCorte[corte] = promedio;
-
-        // Para el cálculo del promedio general, considera los porcentajes
-        const porcentaje = corte === '40% Final' ? 0.40 : 0.20;
-        totalPromedio += promedio * porcentaje;
+        const sumaNotas = notas.reduce((sum, nota) => sum + nota.nota, 0);
+        this.promediosPorCorte[corte] = sumaNotas / notas.length;
+  
+        // Sumar al total general, aplicando el peso correspondiente
+        sumaTotal += this.promediosPorCorte[corte] * (this.obtenerPeso(corte) / 100);
+        totalPesos += this.obtenerPeso(corte); // Acumulando los pesos
+      } else {
+        this.promediosPorCorte[corte] = 0; // Si no hay notas, el promedio es 0
       }
-    });
-
-    this.promedioGeneral = totalPromedio;
-    console.log('Promedios por corte:', this.promediosPorCorte);
-    console.log('Promedio general:', this.promedioGeneral);
+    }
+  
+    // Calcular el promedio general
+    this.promedioGeneral = totalPesos > 0 ? sumaTotal : 0; // Promedio general será 0 si no hay pesos
+  
+    // Determinar si está aprobado: el promedio general debe ser >= 3.0
+    this.aprobado = this.promedioGeneral >= 3.0;
+  }
+  
+  obtenerPeso(corte: string): number {
+    switch (corte) {
+      case 'Primer 20%':
+        return 20;
+      case 'Segundo 20%':
+        return 20;
+      case 'Tercer 20%':
+        return 20;
+      case '40% Final':
+        return 40;
+      default:
+        return 0;
+    }
   }
 
   async confirmarEliminarNotasPorCorte(corte: string) {
@@ -147,6 +164,7 @@ export class VerNotasPage implements OnInit {
     localStorage.setItem('notas', JSON.stringify(nuevasNotas));
 
     this.cargarNotas();
+    this.calcularPromedios(); // Recalcula los promedios después de eliminar notas
   }
 
   async confirmarEliminarNota(nota: Nota) {
@@ -181,6 +199,7 @@ export class VerNotasPage implements OnInit {
     localStorage.setItem('notas', JSON.stringify(nuevasNotas));
 
     this.cargarNotas();
+    this.calcularPromedios(); // Recalcula los promedios después de eliminar la nota
   }
 
   modificarNota(nota: Nota) {

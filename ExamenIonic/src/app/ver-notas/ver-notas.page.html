@@ -5,11 +5,14 @@
 </ion-header>
 
 <ion-content>
+  <h2>Promedio General: {{ promedioGeneral | number:'1.2-2' }}</h2>
+  <h2>Status: {{ aprobado ? 'Aprobada' : 'Reprobada' }}</h2>
+
   <ion-list *ngFor="let corte of ['Primer 20%', 'Segundo 20%', 'Tercer 20%', '40% Final']">
     <ion-item>
       <ion-label>
         <h2>{{ corte }}</h2>
-        <p>Promedio: {{ promediosPorCorte[corte] | number: '1.2-2' }}</p>
+        <p>Promedio: {{ promediosPorCorte[corte] | number:'1.2-2' }}</p>
         <ion-button (click)="confirmarEliminarNotasPorCorte(corte)">Eliminar Todas las Notas de Este Corte</ion-button>
       </ion-label>
     </ion-item>
@@ -33,14 +36,6 @@
       </ion-item>
     </ng-template>
   </ion-list>
-
-  <!-- Mostrar el promedio general de la materia -->
-  <ion-item>
-    <ion-label>
-      <h2>Promedio General de la Materia</h2>
-      <p>{{ promedioGeneral | number: '1.2-2' }}</p>
-    </ion-label>
-  </ion-item>
 
   <ion-button (click)="volverADetalleMateria()">Volver a Detalle de Materia</ion-button>
 </ion-content>
