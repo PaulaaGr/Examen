@@ -1,15 +1,18 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>Materias</ion-title>
+    <ion-buttons slot="end">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <!-- Barra de búsqueda sin ngModel, usando (ionInput) -->
+
   <ion-searchbar (ionInput)="actualizarFiltro($event)" placeholder="Buscar materias"></ion-searchbar>
 
   <ion-list>
-    <!-- Filtrar las materias según el texto de búsqueda -->
+
     <ion-item *ngFor="let materia of filtrarMaterias()">
       <ion-label>
         <h2>{{ materia.nombre }}</h2>

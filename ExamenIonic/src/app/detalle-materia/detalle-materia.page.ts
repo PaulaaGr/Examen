@@ -12,7 +12,8 @@ import {
   IonButton,
   IonContent,
   IonButtons,
-  AlertController
+  AlertController,
+  IonMenuButton
 } from '@ionic/angular/standalone';
 import { Router } from '@angular/router';
 import { Materia } from '../models/materia';
@@ -34,7 +35,8 @@ import { Materia } from '../models/materia';
     IonTextarea,
     IonButton,
     IonContent,
-    IonButtons
+    IonButtons,
+    IonMenuButton
   ],
 })
 export class DetalleMateriaPage implements OnInit {
@@ -126,7 +128,7 @@ export class DetalleMateriaPage implements OnInit {
       materias[index] = this.materia; // Actualiza la materia
       localStorage.setItem('materias', JSON.stringify(materias));
     }
-    this.router.navigate(['/materias']); // Redirigir después de guardar
+    this.router.navigate(['/materias']); 
   }
   
 

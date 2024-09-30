@@ -112,10 +112,10 @@ export class VerNotasPage implements OnInit {
       }
     }
   
-    // Calcular el promedio general
-    this.promedioGeneral = totalPesos > 0 ? sumaTotal : 0; // Promedio general será 0 si no hay pesos
   
-    // Determinar si está aprobado: el promedio general debe ser >= 3.0
+    this.promedioGeneral = totalPesos > 0 ? sumaTotal : 0; 
+  
+    
     this.aprobado = this.promedioGeneral >= 3.0;
   }
   
@@ -166,7 +166,7 @@ export class VerNotasPage implements OnInit {
     localStorage.setItem('notas', JSON.stringify(nuevasNotas));
 
     this.cargarNotas();
-    this.calcularPromedios(); // Recalcula los promedios después de eliminar notas
+    this.calcularPromedios();
   }
 
   async confirmarEliminarNota(nota: Nota) {
@@ -201,7 +201,7 @@ export class VerNotasPage implements OnInit {
     localStorage.setItem('notas', JSON.stringify(nuevasNotas));
 
     this.cargarNotas();
-    this.calcularPromedios(); // Recalcula los promedios después de eliminar la nota
+    this.calcularPromedios();
   }
 
   modificarNota(nota: Nota) {
@@ -209,7 +209,7 @@ export class VerNotasPage implements OnInit {
       state: {
         materia: this.materia,
         nota: nota,
-        esEditar: true // Indicar que es una modificación de la nota
+        esEditar: true // Indica que es una modificación de la nota
       }
     });
   }

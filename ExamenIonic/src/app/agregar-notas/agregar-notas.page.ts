@@ -15,8 +15,9 @@ import {
   IonButtons,
   IonSelectOption,
   IonSelect,
+  IonMenuButton
 } from '@ionic/angular/standalone';
-import { Nota } from '../models/nota'; // Importa la interfaz Nota
+import { Nota } from '../models/nota'; 
 
 @Component({
   selector: 'app-agregar-notas',
@@ -38,6 +39,7 @@ import { Nota } from '../models/nota'; // Importa la interfaz Nota
     IonButtons,
     IonSelectOption,
     IonSelect,
+    IonMenuButton
   ],
 })
 export class AgregarNotasPage implements OnInit {
@@ -67,7 +69,7 @@ export class AgregarNotasPage implements OnInit {
 
     const notaExistente = state?.['nota'];
     if (notaExistente) {
-      this.nota = { ...notaExistente }; // Prellenar la nota con la información existente
+      this.nota = { ...notaExistente };
       this.esEditar = true;
     }
   }

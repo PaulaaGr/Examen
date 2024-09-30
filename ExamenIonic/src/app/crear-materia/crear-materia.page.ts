@@ -12,7 +12,9 @@ import {
   IonButton,
   IonInput,
   IonTextarea,
-} from '@ionic/angular/standalone'; // Importa IonInput también
+  IonButtons,
+  IonMenuButton
+} from '@ionic/angular/standalone'; 
 import { Materia } from '../models/materia';
 
 
@@ -33,7 +35,9 @@ import { Materia } from '../models/materia';
     IonButton,
     IonInput,
     IonTextarea,
-  ], // Asegúrate de incluir IonInput
+    IonButtons,
+    IonMenuButton
+  ],
 })
 export class CrearMateriaPage {
   materia: Materia = {

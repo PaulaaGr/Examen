@@ -12,7 +12,8 @@ import {
   IonLabel,
   IonButton,
   IonButtons,
-  IonSearchbar
+  IonSearchbar,
+  IonMenuButton
 } from '@ionic/angular/standalone';
 import { Materia } from '../models/materia';
 
@@ -34,12 +35,13 @@ import { Materia } from '../models/materia';
     IonButton,
     RouterModule,
     IonButtons,
-    IonSearchbar
+    IonSearchbar,
+    IonMenuButton
   ],
 })
 export class MateriasPage implements OnInit {
   materias: Materia[] = [];
-  textoBusqueda: string = ''; // Variable para almacenar el texto de búsqueda
+  textoBusqueda: string = ''; 
 
   constructor(private router: Router) {}
 
