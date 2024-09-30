@@ -11,7 +11,8 @@ import {
   IonItem,
   IonLabel,
   IonButton,
-  IonButtons
+  IonButtons,
+  IonSearchbar
 } from '@ionic/angular/standalone';
 import { Materia } from '../models/materia';
 
@@ -32,20 +33,22 @@ import { Materia } from '../models/materia';
     IonLabel,
     IonButton,
     RouterModule,
-    IonButtons
+    IonButtons,
+    IonSearchbar
   ],
 })
 export class MateriasPage implements OnInit {
   materias: Materia[] = [];
+  textoBusqueda: string = ''; // Variable para almacenar el texto de búsqueda
 
-  constructor(private router: Router) {} // Inyectar Router aquí
+  constructor(private router: Router) {}
 
   ngOnInit() {
-    this.cargarMaterias(); // Cargar las materias al iniciar
+    this.cargarMaterias();
   }
 
   ionViewWillEnter() {
-    this.cargarMaterias(); // Cargar las materias cada vez que se entra a la vista
+    this.cargarMaterias();
   }
 
   cargarMaterias() {
@@ -53,6 +56,22 @@ export class MateriasPage implements OnInit {
   }
 
   verDetalleMateria(materia: Materia) {
-    this.router.navigate(['/detalle-materia'], { state: { materia } }); // Ahora 'router' está disponible
+    this.router.navigate(['/detalle-materia'], { state: { materia } });
+  }
+
+  // Método que se ejecuta al cambiar el texto en la barra de búsqueda
+  actualizarFiltro(event: Event) {
+    const input = event.target as HTMLInputElement;
+    this.textoBusqueda = input.value.toLowerCase(); // Actualiza el texto de búsqueda
+  }
+
+  // Filtrar materias basado en el texto de búsqueda
+  filtrarMaterias() {
+    if (this.textoBusqueda.trim() === '') {
+      return this.materias; // Si no hay texto, devuelve todas las materias
+    }
+    return this.materias.filter(materia =>
+      materia.nombre.toLowerCase().includes(this.textoBusqueda)
+    );
   }
 }

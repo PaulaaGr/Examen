@@ -11,6 +11,7 @@ import {
   IonButton,
   IonContent,
   AlertController,
+  IonButtons
 } from '@ionic/angular/standalone';
 import { Nota } from '../models/nota'; // Importa la interfaz Nota
 import { Materia } from '../models/materia'; // Importa la interfaz Materia
@@ -30,6 +31,7 @@ import { Materia } from '../models/materia'; // Importa la interfaz Materia
     IonLabel,
     IonButton,
     IonContent,
+    IonButtons
   ],
 })
 export class VerNotasPage implements OnInit {
